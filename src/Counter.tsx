@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-export const Counter = ({ initialValue = 0 }) => {
+interface Props {
+  //* aca ponemos el tipo de las props que va a recibir
+  initialValue?: number; //* ? el signo de pregunta simboliza que podemos recibir o no la prop en el componente
+}
+export const Counter = ({ initialValue = 0 }: Props) => {
+  //* aca ponemos que initialValue lo va a buscar en las definiciones que hacemos en interface Props
   const [counter, setCounter] = useState(initialValue);
 
   const handleClick = () => {
