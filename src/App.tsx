@@ -1,4 +1,5 @@
 import { Counter } from "./Counter";
+import { CounterBy } from "./CounterBy";
 
 function App() {
   return (
@@ -6,6 +7,7 @@ function App() {
       <h1>React</h1>
       <hr />
       <Counter initialValue={15} />
+      <CounterBy />
     </>
   );
 }
