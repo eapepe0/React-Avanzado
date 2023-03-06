@@ -3,7 +3,7 @@ import { gsap } from "gsap";
 
 //* Le vamos a dar el valor maximo
 export const useCounter = ({ maxCount = 10 }) => {
-  //* aca ponemos que initialValue lo va a buscar en las definiciones que hacemos en interface Props
+  //* aca ponemos el valor inicial del counter
   const [counter, setCounter] = useState(5);
 
   //* cuando se cambie el valor de elementToAnimate no va a disparar un re - renderizado
@@ -13,6 +13,7 @@ export const useCounter = ({ maxCount = 10 }) => {
   //* se va a crear una sola vez y se almacena la referencia en memoria
 
   const handleClick = () => {
+    //* al hacer click en el boton
     setCounter((prev) => Math.min(prev + 1, maxCount));
     //* usamos el Math.min (evalua un a serie de numeros y devuelve el menor) al llagar a MAX_COUNT , siempre lo va devolver por eso nunca lo va a superar
   };
@@ -33,8 +34,8 @@ export const useCounter = ({ maxCount = 10 }) => {
       duration: 1,
       ease: "bounce.out",
     });
-    tl.current.pause();
-  }, []);
+    tl.current.pause(); //* pausa el efecto
+  }, []); //* se ejecuta cuando nuestros elementos HTML ya estan correctamente establecidas
 
   useEffect(() => {
     //if (counter < maxCount) return;
