@@ -1,39 +1,52 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 
-const MAX_COUNT = 10;
-
-export const useCounter = () => {
+//* Le vamos a dar el valor maximo
+export const useCounter = ({ maxCount = 10 }) => {
   //* aca ponemos que initialValue lo va a buscar en las definiciones que hacemos en interface Props
   const [counter, setCounter] = useState(5);
 
-  //* cuando se cambie el valor de counterElement no va a disparar un re - renderizado
-  const counterElement = useRef<HTMLHeadingElement>(null);
+  //* cuando se cambie el valor de elementToAnimate no va a disparar un re - renderizado
+  const elementToAnimate = useRef<any>(null); //* usamos el <any> asi podemos usar los efectos en cualquier elemento HTML
+
+  const tl = useRef(gsap.timeline());
+  //* se va a crear una sola vez y se almacena la referencia en memoria
 
   const handleClick = () => {
-    setCounter((prev) => Math.min(prev + 1, MAX_COUNT));
-    //* usamos el Math.min (evalua una serie de numeros y devuelve el menor) al llagar a MAX_COUNT , siempre lo va devolver por eso nunca lo va a superar
+    setCounter((prev) => Math.min(prev + 1, maxCount));
+    //* usamos el Math.min (evalua un a serie de numeros y devuelve el menor) al llagar a MAX_COUNT , siempre lo va devolver por eso nunca lo va a superar
   };
-  useEffect(() => {
-    if (counter < 10) return; //* si counter es menor que 10 volvemos no hacemos nada
-    //* si es mayor a 10 mostramos el mensaje siguiente estilizado
-    console.log(
-      "%cSe llego al valor maximo!!!",
-      "color:red; background-color:white"
-    );
 
-    const tl = gsap.timeline(); //* la forma recomendada es usar un timeline
-    tl.to(counterElement.current, { y: -10, duration: 0.2, ease: "ease.out" });
-    tl.to(counterElement.current, { y: 0, duration: 1, ease: "bounce.out" });
-    //* creamos la animacion que afecta al ref counterElement , donde y se movera hacia arriba con un valor negativo en un transcurso de 0.2 seg
-    //* gsap.to es una promesa asi que usando un .then podemos controlar lo que se ejecuta cuando se cumple la promesa
-    //* en este caso usamos otra animacion para simular un rebote
+  //* se asegura que ya tengamos construidos nuestros elementos HTML , o sea que las dimensiones ya esten correctamente establecidas
+  //* y se ejecuta la primera vez
+  useLayoutEffect(() => {
+    if (!elementToAnimate.current) return; //* si la referencia no esta establecida no hace nada
+
+    //* le agregamos el .current por que con el useRef es como hacerle una envoltura
+    tl.current.to(elementToAnimate.current, {
+      y: -10,
+      duration: 0.2,
+      ease: "ease.out",
+    });
+    tl.current.to(elementToAnimate.current, {
+      y: 0,
+      duration: 1,
+      ease: "bounce.out",
+    });
+    tl.current.pause();
+  }, []);
+
+  useEffect(() => {
+    //if (counter < maxCount) return;
+    //* se ejecuta si el counter es menor al maximo que establecimos del contador
+    //* dandole el efecto que salta si llego al maximo establecido , si lo sacamos salta cada vez que el counter cambia
+    tl.current.play(0); //* cada vez que cambia el counter empezamos la animacion del useEffectLayout
   }, [counter]); //* se ejecuta el useEffect cada vez que cambia el counter ( o sea cuando hacemos click en el boton)
 
   //* devolvemos lo que vamos a necesitar como si fuera un objeto
   return {
     counter,
-    counterElement,
+    elementToAnimate,
     handleClick,
   };
 };
