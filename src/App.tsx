@@ -1,7 +1,10 @@
-import { Counter } from "./Counter";
-import { CounterBy } from "./CounterBy";
-import { CounterEffect } from "./CounterEffect";
-import { CounterHook } from "./CounterHook";
+import {
+  Counter,
+  CounterBy,
+  CounterEffect,
+  CounterHook,
+  CounterReducerComponent,
+} from "./bases/";
 
 function App() {
   return (
@@ -9,9 +12,14 @@ function App() {
       <h1>React</h1>
       <hr />
       <Counter initialValue={15} />
+      <hr />
       <CounterBy />
+      <hr />
       <CounterEffect />
+      <hr />
       <CounterHook />
+      <hr />
+      <CounterReducerComponent />
     </>
   );
 }
