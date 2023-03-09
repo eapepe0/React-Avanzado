@@ -9,9 +9,9 @@ interface CounterState {
 
 //* este seria el estado inicial
 const INITIAL_STATE: CounterState = {
-  counter: 10,
-  previous: 15,
-  changes: 1,
+  counter: 0,
+  previous: 0,
+  changes: 0,
 };
 //* ejemplo de funcion pura , no tiene interaccion con el mundo externo
 //* y se resuelve con los argumentos que recibe
@@ -38,7 +38,15 @@ const counterReducer = (
         changes: 0,
         previous: 0,
       };
-
+    //* devolvemos otro estado , donde counter sea igual a el estado anterior + el valor enviado
+    //* los cambios se sumaran en 1
+    //* y el valor previo sera igual al contador
+    case "increaseBy":
+      return {
+        counter: state.counter + action.payload.value,
+        changes: state.changes + 1,
+        previous: state.counter,
+      };
     default:
       //* si recibimos una accion que no este definida devolvemos el estado intacto
       return state;
@@ -46,14 +54,26 @@ const counterReducer = (
 };
 export const CounterReducerComponent = () => {
   //* desestructuramos el counter del counterState , usamos el dispatch para usar las acciones
-  const [{ counter }, dispatch] = useReducer(counterReducer, INITIAL_STATE);
-  const handleClick = () => {
+  const [counterState, dispatch] = useReducer(counterReducer, INITIAL_STATE);
+
+  //* despachamos la accion reset
+  const handleReset = () => {
     dispatch({ type: "reset" });
   };
+
+  //* despachamos la accion increaseBy
+  const increaseBy = (value: number) => {
+    dispatch({ type: "increaseBy", payload: { value: value } });
+  };
+
   return (
     <>
-      <h1>CounterReducer : {counter}</h1>
-      <button onClick={handleClick}>+1</button>
+      <h1>CounterReducer</h1>
+      <pre>{JSON.stringify(counterState, null, 2)}</pre>
+      <button onClick={() => increaseBy(1)}>+1</button>
+      <button onClick={() => increaseBy(5)}>+5</button>
+      <button onClick={() => increaseBy(10)}>+10</button>
+      <button onClick={handleReset}>Reset</button>
     </>
   );
 };
